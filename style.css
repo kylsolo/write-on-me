@@ -1,0 +1,103 @@
+h1 {
+  text-align: center;
+}
+
+#canvasDiv {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#button-bar {
+  text-align: center;
+}
+
+.color,
+.clear-drawing {
+  margin: auto;
+}
+
+
+#canvasDiv canvas {
+  border: none;
+}
+
+#canvasDiv {
+  overflow: hidden;
+  /* Prevent nearby text being highlighted when accidentally dragging mouse outside confines of the canvas */
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+body,
+html {
+  overflow-y: auto;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+body, 
+body * {
+  box-sizing: border-box;
+}
+#wrapper {
+  margin: 10px;
+}
+
+#button-bar {
+  margin-top: 10px;
+}
+
+.color,
+.clear-drawing {
+  border: 1px solid black;
+  height: 40px;
+  width: 40px;
+  display: inline-block;
+  border-radius: 50%;
+  margin-right: 10px;
+  padding-right: 10px;
+  padding-left: 4px;
+  padding-top: 9px;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.color-red {
+  background-color: #DC3333;
+}
+.color-blue {
+  background-color: #3393DC;
+}
+.color-green {
+  background-color: #2DB93B;
+}
+.color-yellow {
+  background-color: #E3EF3E;
+}
+
+.color:hover {
+  transform: scale(1.2);
+}
+
+.color {
+  transition: transform .5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.clear-drawing:hover {
+  transform: scale(1.2);
+}
+
+.clear-drawing {
+  transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.color.selected {
+  border: 2px solid black;
+}
