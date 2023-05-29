@@ -133,22 +133,24 @@ function addClick(x, y, dragging) {
 }
 
 function redraw() {
-  context.drawImage(img, 0, 0, canvas.width, canvas.height); // Clears the canvas
+  context.clearRect(0, 0, context.canvas.width, context.canvas.height); // Clears the canvas
+  context.drawImage(img, 0, 0, canvas.width, canvas.height); // Draw the base image
   
   context.lineJoin = "round";
   context.lineWidth = 5;
   
+  var currentTime = (new Date()).getTime();
   for (var i = strokes.length - 1; i >= 0; i--) {
     var s = strokes[i];
     if (s.fadeOutTime) {
-      var timeDiff = (new Date()).getTime() - s.fadeOutTime;
+      var timeDiff = currentTime - s.fadeOutTime;
       if (timeDiff > 5000) {
         strokes.splice(i, 1);
         continue;
       }
       context.globalAlpha = 1 - timeDiff / 5000;
     } else {
-      s.fadeOutTime = (new Date()).getTime();
+      s.fadeOutTime = currentTime;
     }
     context.beginPath();
     context.moveTo(s.coordinates[0].x, s.coordinates[0].y);
@@ -159,7 +161,11 @@ function redraw() {
     context.stroke();
     context.globalAlpha = 1;
   }
+  
+  requestAnimationFrame(redraw); // Call redraw again before the next repaint
 }
+
+redraw(); // Start the drawing loop
 
 function clearDrawing() {
   strokes = [];
