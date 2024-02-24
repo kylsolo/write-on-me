@@ -15,8 +15,8 @@ h1 {
 .color,
 .clear-drawing {
   margin: auto;
+  cursor: pointer; /* Makes it clear they are clickable */
 }
-
 
 #canvasDiv canvas {
   border: none;
@@ -24,7 +24,6 @@ h1 {
 
 #canvasDiv {
   overflow: hidden;
-  /* Prevent nearby text being highlighted when accidentally dragging mouse outside confines of the canvas */
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -32,6 +31,7 @@ h1 {
   -ms-user-select: none;
   user-select: none;
 }
+
 body,
 html {
   overflow-y: auto;
@@ -39,10 +39,12 @@ html {
   height: 100%;
   margin: 0;
 }
+
 body, 
 body * {
   box-sizing: border-box;
 }
+
 #wrapper {
   margin: 10px;
 }
@@ -59,9 +61,7 @@ body * {
   display: inline-block;
   border-radius: 50%;
   margin-right: 10px;
-  padding-right: 10px;
-  padding-left: 4px;
-  padding-top: 9px;
+  padding: 4px;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -69,35 +69,32 @@ body * {
   -ms-user-select: none;
   user-select: none;
 }
-.color-red {
-  background-color: #DC3333;
-}
-.color-blue {
-  background-color: #3393DC;
-}
-.color-green {
-  background-color: #2DB93B;
-}
-.color-yellow {
-  background-color: #E3EF3E;
-}
 
-.color:hover {
-  transform: scale(1.2);
-}
+.color-red { background-color: #DC3333; }
+.color-blue { background-color: #3393DC; }
+.color-green { background-color: #2DB93B; }
+.color-yellow { background-color: #E3EF3E; }
 
-.color {
-  transition: transform .5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
+.color:hover,
 .clear-drawing:hover {
   transform: scale(1.2);
 }
 
-.clear-drawing {
-  transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
+.color, .clear-drawing {
+  transition: transform .5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .color.selected {
   border: 2px solid black;
+}
+
+@media (max-width: 768px) {
+  #wrapper {
+    margin: 5px;
+  }
+  .color, .clear-drawing {
+    width: 35px;
+    height: 35px;
+    margin-right: 5px;
+  }
 }
