@@ -1,28 +1,25 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>CodePen - write upon me 4</title>
-  <link rel="stylesheet" href="./style.css">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas Drawing</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<!-- partial:index.partial.html -->
-<div id="wrapper">
-  <div id="canvasDiv"></div>
-  <div id="button-bar">
-    <div class="color color-red">&nbsp;</div>
-    <div class="color color-blue">&nbsp;</div>
-    <div class="color color-green">&nbsp;</div>
-    <div class="color color-yellow">&nbsp;</div>
-    <div class="clear-drawing">clear  </div>
-  </div>
-</div>
-
-
-<!--img class="resizable" src="http://abcony.ro/wp/wp-content/uploads/2014/03/poza-3-1024x640.jpg" alt="hej" /-->
-<!-- partial -->
-  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js'></script><script  src="./script.js"></script>
-
+    <div id="wrapper">
+        <h1>Canvas Drawing</h1>
+        <div id="canvasDiv"></div>
+        <div id="button-bar">
+            <div class="color color-red selected" onclick="selectColor('red')"></div>
+            <div class="color color-blue" onclick="selectColor('blue')"></div>
+            <div class="color color-green" onclick="selectColor('green')"></div>
+            <div class="color color-yellow" onclick="selectColor('yellow')"></div>
+            <div class="clear-drawing" onclick="clearCanvas()">Clear</div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
+
