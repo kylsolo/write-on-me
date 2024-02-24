@@ -1,12 +1,8 @@
 $(function() {
-  // Dynamically adjust canvas size on window resize
-  $(window).resize(function() {
-    resizeCanvas();
-  });
-
   setupCanvas(function () {
     setupDrawingHandlers();
-    setupToolsHandlers();
+    setupToolsHandlers()
+
     redraw();
   });
 });
@@ -16,74 +12,69 @@ function setupCanvas(callback) {
   img = new Image;
   img.src = 'https://i.ibb.co/pfcNPtH/2023-02-13-11-58-31-a-woman-dancing-oil-painting.jpg';
   img.onload = function () {
-    adjustCanvasSize(); // Adjust canvas size based on image and viewport
+    console.log('img.width: ' + img.width);
+    console.log('img.height: ' + img.height);
+    console.log('wrapper width: ' + $('#wrapper').width());
+    
+    var canvasDiv = document.getElementById('canvasDiv');
+    var canvasWidth = $('#wrapper').width();
+    var canvasHeight = img.height * (canvasWidth / img.width);
+    if (canvasHeight > $('body').height() - 100) {
+      console.log('asd');
+      canvasHeight = $('body').height() - 100;
+      canvasWidth = img.width * (canvasHeight / img.height);
+    }
+    console.log('canvasWidth: ' + canvasWidth);
+    console.log('canvasHeight: ' + canvasHeight);
+    var canvas = document.createElement('canvas');
+    var paint = false;
+    canvas.setAttribute('width', canvasWidth);
+    canvas.setAttribute('height', canvasHeight);
+    canvas.setAttribute('id', 'canvas');
+    canvasDiv.appendChild(canvas);
+    if (typeof G_vmlCanvasManager != 'undefined') {
+      canvas = G_vmlCanvasManager.initElement(canvas);
+    }
+    context = canvas.getContext("2d");
     callback();
   };
 }
 
-function adjustCanvasSize() {
-  console.log('Adjusting canvas size');
-  var canvasDiv = document.getElementById('canvasDiv');
-  var canvasWidth = $('#wrapper').width();
-  var canvasHeight = img.height * (canvasWidth / img.width);
-  if (canvasHeight > $('body').height() - 100) {
-    canvasHeight = $('body').height() - 100;
-    canvasWidth = img.width * (canvasHeight / img.height);
-  }
-  var canvas = document.getElementById('canvas') || document.createElement('canvas');
-  canvas.setAttribute('width', canvasWidth);
-  canvas.setAttribute('height', canvasHeight);
-  canvas.setAttribute('id', 'canvas');
-  if (!canvas.getContext) {
-    canvasDiv.appendChild(canvas);
-  }
-  context = canvas.getContext("2d");
-}
-
-// Resizing canvas on window resize
-function resizeCanvas() {
-  adjustCanvasSize();
-  redraw(); // Redraw everything on resize to fit new dimensions
-}
-
-// Updated touch and mouse handlers for drawing
 function setupDrawingHandlers() {
   $('#canvas').on('mousedown touchstart', function(e) {
-    // Handling touch events differently
-    var mouseX, mouseY;
-    if (e.originalEvent.touches) {
-      e.preventDefault(); // Prevent scrolling when drawing
-      var touch = e.originalEvent.touches[0];
-      mouseX = touch.pageX - this.offsetLeft;
-      mouseY = touch.pageY - this.offsetTop;
-    } else {
-      mouseX = e.pageX - this.offsetLeft;
-      mouseY = e.pageY - this.offsetTop;
-    }
+    var rect = this.getBoundingClientRect();
+    var mouseX = e.pageX - rect.left;
+    var mouseY = e.pageY - rect.top;
+
     paint = true;
     addClick(mouseX, mouseY, false);
     redraw();
   });
-
-  // Combined mouse and touch move events
-  $(document).on('mousemove touchmove', '#canvas', function(e) {
+  $('#canvas').on('mousemove', function(e) {
     if (paint) {
-      var mouseX, mouseY;
-      if (e.originalEvent.touches) {
-        var touch = e.originalEvent.touches[0];
-        mouseX = touch.pageX - this.offsetLeft;
-        mouseY = touch.pageY - this.offsetTop;
-      } else {
-        mouseX = e.pageX - this.offsetLeft;
-        mouseY = e.pageY - this.offsetTop;
-      }
+      var rect = this.getBoundingClientRect();
+      var mouseX = e.pageX - rect.left;
+      var mouseY = e.pageY - rect.top;
+
       addClick(mouseX, mouseY, true);
       redraw();
     }
   });
+  $('#canvas').on('touchmove', function(e) {
+    if (e.touches) {
+      if (e.touches.length == 1) { // Only deal with one finger
+        var touch = e.touches[0]; // Get the information for finger #1
+        var rect = this.getBoundingClientRect();
+        var touchX = touch.pageX - rect.left;
+        var touchY = touch.pageY - rect.top;
 
-  // Unified end drawing handler
-  $(document).on('mouseup touchend mouseleave', '#canvas', function(e) {
+        addClick(touchX, touchY, true);
+        redraw();
+      }
+    }
+    e.preventDefault(); // avoid scrolling
+  });
+  $('#canvas').on('mouseup touchend mouseleave', function(e) {
     paint = false;
   });
 }
@@ -142,9 +133,8 @@ function addClick(x, y, dragging) {
 }
 
 function redraw() {
-  if (!paint) return; // Only redraw if needed (e.g., when drawing)
-  context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-  context.drawImage(img, 0, 0, context.canvas.width, context.canvas.height);
+  context.clearRect(0, 0, context.canvas.width, context.canvas.height); // Clears the canvas
+  context.drawImage(img, 0, 0, canvas.width, canvas.height); // Draw the base image
   
   context.lineJoin = "round";
   context.lineWidth = 5;
@@ -175,25 +165,9 @@ function redraw() {
   requestAnimationFrame(redraw); // Call redraw again before the next repaint
 }
 
-// Adjusted to optimize and conditionally control the drawing loop for efficiency
-function redraw() {
-  if (!paint) {
-    // Ensures redraw is called only when needed, reducing unnecessary CPU usage
-    return;
-  }
-  context.clearRect(0, 0, context.canvas.width, context.canvas.height); // Clears the canvas
-  context.drawImage(img, 0, 0, context.canvas.width, context.canvas.height); // Draw the base image
-
-  // Your existing logic for handling strokes and drawing them on the canvas
-
-  requestAnimationFrame(redraw); // Continues the loop, optimized for visual updates
-}
-
-// Now, instead of starting the drawing loop immediately with redraw();
-// It's recommended to start it based on a specific event, like a touch or mouse down,
-// to ensure it runs only when necessary, optimizing resource usage.
+redraw(); // Start the drawing loop
 
 function clearDrawing() {
-  strokes = []; // Clears the drawing strokes
-  context.drawImage(img, 0, 0, context.canvas.width, context.canvas.height); // Redraws the background image
+  strokes = [];
+  context.drawImage(img, 0, 0, canvas.width, canvas.height);
 }
